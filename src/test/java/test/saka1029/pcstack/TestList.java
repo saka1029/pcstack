@@ -1,4 +1,4 @@
-package pcstack;
+package test.saka1029.pcstack;
 
 import static org.junit.Assert.assertEquals;
 
