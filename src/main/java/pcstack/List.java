@@ -2,7 +2,6 @@ package pcstack;
 
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 public interface List extends Verb, Iterable<Verb> {
 
