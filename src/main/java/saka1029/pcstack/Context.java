@@ -1,4 +1,4 @@
-package pcstack;
+package saka1029.pcstack;
 
 import java.util.Deque;
 import java.util.HashMap;

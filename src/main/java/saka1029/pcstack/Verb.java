@@ -1,4 +1,4 @@
-package pcstack;
+package saka1029.pcstack;
 
 public interface Verb {
 
