@@ -3,7 +3,7 @@ package saka1029.pcstack;
 import java.util.Collections;
 import java.util.Iterator;
 
-public interface List extends Verb, Iterable<Verb> {
+public interface List extends Verb, Collection {
 
     public static List of(Verb... elements) {
         List list = NIL;

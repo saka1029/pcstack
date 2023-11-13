@@ -1,6 +1,6 @@
 package saka1029.pcstack;
 
-public class Int implements Value {
+public class Int implements Value, Ordered {
     
     public final int value;
     
@@ -10,6 +10,11 @@ public class Int implements Value {
     
     public static Int of(int value) {
         return new Int(value);
+    }
+    
+    @Override
+    public int compareTo(Ordered o) {
+        return Integer.compare(value, ((Int)o).value);
     }
     
     @Override
