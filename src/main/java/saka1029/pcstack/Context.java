@@ -1,9 +1,6 @@
 package saka1029.pcstack;
 
-import java.util.Deque;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -50,6 +47,10 @@ public class Context {
 
     public void dup(int index) {
         push(peek(index));
+    }
+    
+    public void drop() {
+        --sp;
     }
     
     public void swap() {
@@ -109,6 +110,7 @@ public class Context {
     void init() {
         add("@0", c -> dup(0));
         add("@1", c -> dup(1));
+        add("drop", Context::drop);
         add("swap", Context::swap);
         add("+", c -> c.push(i(i(c.pop()) + i(c.pop()))));
         add("-", c -> c.push(i(-i(c.pop()) + i(c.pop()))));
@@ -139,5 +141,6 @@ public class Context {
                 c.execute(closure);
             }
         });
+        add("generator", c -> c.push(Generator.of(c.child(), (Collection)c.pop())));
     }
 }
