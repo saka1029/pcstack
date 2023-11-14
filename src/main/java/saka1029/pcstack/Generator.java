@@ -33,7 +33,7 @@ public class Generator implements Value, Collection {
             while (codes.hasNext()) {
                 context.execute(codes.next());
                 if (context.sp >= 2 && context.peek(0) == YIELD) {
-                    context.drop(); // deop YIELD;
+                    context.drop(); // drop YIELD;
                     return context.pop();
                 }
             }
