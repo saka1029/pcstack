@@ -1,6 +1,7 @@
 package saka1029.pcstack;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class Generator implements Value, Collection {
     
@@ -25,9 +26,8 @@ public class Generator implements Value, Collection {
     
     class Iter implements Iterator<Verb> {
         
-        Verb v = advance();
-        Context context = Generator.this.context;
         Iterator<Verb> codes = Generator.this.codes.iterator();
+        Verb v = advance();
         
         Verb advance() {
             while (codes.hasNext()) {
@@ -47,6 +47,8 @@ public class Generator implements Value, Collection {
 
         @Override
         public Verb next() {
+            if (!hasNext())
+                throw new NoSuchElementException();
             Verb r = v;
             v = advance();
             return r;
