@@ -27,11 +27,8 @@ public interface List extends Verb, Collection {
 
     @Override
     default void execute(Context c) {
-        Iterator<Verb> it = iterator();
-        c.rstack.push(it);
-        while (it.hasNext())
-            c.execute(it.next());
-        c.rstack.pop();
+        for (Verb e : this)
+            c.execute(e);
     }
     
 }

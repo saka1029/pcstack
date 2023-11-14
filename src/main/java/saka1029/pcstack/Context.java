@@ -14,12 +14,17 @@ public class Context {
     final Verb[] stack;
     public int sp = 0;
 
-    final Deque<Iterator<Verb>> rstack = new LinkedList<>();
-    final Map<Symbol, Verb> globals = new HashMap<>();
-    final Consumer<String> output = System.out::print;
-    
+    final Map<Symbol, Verb> globals;
+    final Consumer<String> output;
+
+    Context(Verb[] stack, Map<Symbol, Verb> globals, Consumer<String> output) {
+        this.stack = stack;
+        this.globals = globals;
+        this.output = output;
+    }
+
     Context(int stackSize) {
-        this.stack = new Verb[stackSize];
+        this(new Verb[stackSize], new HashMap<>(), System.out::println);
         init();
     }
     
@@ -27,6 +32,10 @@ public class Context {
         return new Context(stackSize);
     }
     
+    public Context child() {
+        return new Context(new Verb[stack.length], globals, output);
+    }
+
     public Verb pop() {
         return stack[--sp];
     }
