@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import saka1029.pcstack.Context;
-import saka1029.pcstack.Generator;
 import saka1029.pcstack.Int;
 import saka1029.pcstack.List;
 import saka1029.pcstack.Quote;
