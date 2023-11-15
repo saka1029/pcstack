@@ -141,7 +141,5 @@ public class Context {
                 c.execute(closure);
             }
         });
-        add("generator", c -> c.push(Generator.of(c.child(), (Collection)c.pop())));
-        add("yield", Generator.YIELD);
     }
 }
