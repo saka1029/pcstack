@@ -1,11 +1,14 @@
 package test.saka1029.pcstack;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
 import org.junit.Test;
@@ -51,5 +54,17 @@ public class TestDeque {
         assertEquals(List.of(1, 2, 3), new LinkedList<>(stack));
         assertEquals(3, (int)stack.removeLast());
         assertEquals(List.of(1, 2), new LinkedList<>(stack));
+    }
+
+    @Test
+    public void testPeekLastAndGetLast() {
+        Deque<Integer> stack = new ArrayDeque<>();
+        assertNull(stack.peekLast());
+        try {
+            assertEquals(3, (int)stack.getLast());
+            fail();
+        } catch (NoSuchElementException e) {
+            
+        }
     }
 }
