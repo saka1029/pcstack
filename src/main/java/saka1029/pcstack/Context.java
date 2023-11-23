@@ -1,6 +1,9 @@
 package saka1029.pcstack;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -11,17 +14,19 @@ public class Context {
     final Verb[] stack;
     public int sp = 0;
 
+    final Deque<Iterator<Verb>> rstack;
     final Map<Symbol, Verb> globals;
     final Consumer<String> output;
 
-    Context(Verb[] stack, Map<Symbol, Verb> globals, Consumer<String> output) {
+    Context(Verb[] stack, Deque<Iterator<Verb>> rstack, Map<Symbol, Verb> globals, Consumer<String> output) {
         this.stack = stack;
+        this.rstack = rstack;
         this.globals = globals;
         this.output = output;
     }
 
     Context(int stackSize) {
-        this(new Verb[stackSize], new HashMap<>(), System.out::println);
+        this(new Verb[stackSize], new ArrayDeque<>(), new HashMap<>(), System.out::println);
         init();
     }
     
@@ -30,7 +35,7 @@ public class Context {
     }
     
     public Context child() {
-        return new Context(new Verb[stack.length], globals, output);
+        return new Context(new Verb[stack.length], new ArrayDeque<>(), globals, output);
     }
 
     public Verb pop() {
@@ -141,5 +146,25 @@ public class Context {
                 c.execute(closure);
             }
         });
+    }
+    
+    public Terminator execute() {
+        while (!rstack.isEmpty()) {
+            Iterator<Verb> it = rstack.getLast();
+            while (it.hasNext()) {
+                execute(it.next());
+                if (sp > 0 && peek(0) instanceof Terminator t) {
+                    switch (t) {
+                        case END:
+                        case BREAK:
+                        case YIELD:
+                        default:
+                            throw new RuntimeException("unknown Terminator");
+                    }
+                }
+            }
+            rstack.removeLast();
+        }
+        return Terminator.END;
     }
 }
