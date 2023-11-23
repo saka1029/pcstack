@@ -151,15 +151,19 @@ public class Context {
     public Terminator execute() {
         while (!rstack.isEmpty()) {
             Iterator<Verb> it = rstack.getLast();
-            while (it.hasNext()) {
+            L: while (it.hasNext()) {
                 execute(it.next());
                 if (sp > 0 && peek(0) instanceof Terminator t) {
+                    pop(); // drop Terminator
                     switch (t) {
                         case END:
+                            throw new RuntimeException("Terminator END is not allowed");
                         case BREAK:
+                            break L;
                         case YIELD:
+                            return Terminator.YIELD;
                         default:
-                            throw new RuntimeException("unknown Terminator");
+                            throw new RuntimeException("Unknown Terminator");
                     }
                 }
             }
