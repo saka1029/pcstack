@@ -71,7 +71,11 @@ public class Context {
     }
     
     public void execute(Verb v) {
-        v.execute(this);
+        if (v instanceof List l) {
+            rstack.addLast(l.iterator());
+            execute();
+        } else
+            v.execute(this);
     }
     
     public Verb eval(Verb v) {
@@ -162,7 +166,7 @@ public class Context {
                     pop(); // drop Terminator
                     switch (t) {
                         case END:
-                            throw new RuntimeException("Terminator END is not allowed");
+                            throw new RuntimeException("Do not push Terminator END on the stack");
                         case BREAK:
                             break L1;
                         case YIELD:
