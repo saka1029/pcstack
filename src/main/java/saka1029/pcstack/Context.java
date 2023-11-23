@@ -71,7 +71,11 @@ public class Context {
     }
     
     public void execute(Verb v) {
-        v.execute(this);
+        if (v instanceof List list) {
+            rstack.addLast(list.iterator());
+            execute();
+        } else
+            v.execute(this);
     }
     
     public Verb eval(Verb v) {
