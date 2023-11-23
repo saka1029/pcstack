@@ -7,6 +7,7 @@ import org.junit.Test;
 import saka1029.pcstack.Context;
 import saka1029.pcstack.Int;
 import saka1029.pcstack.List;
+import saka1029.pcstack.Terminator;
 
 public class TestList {
 
@@ -25,6 +26,16 @@ public class TestList {
         assertEquals(Int.of(5), c.pop());
         assertEquals(Int.of(40), c.pop());
         assertEquals(Int.of(30), c.pop());
+        assertEquals(Int.of(2), c.pop());
+        assertEquals(Int.of(1), c.pop());
+        assertEquals(0, c.sp);
+    }
+
+    @Test
+    public void testBreak() {
+        Context c = Context.of(10);
+        c.execute(List.of(Int.of(1), Int.of(2), Int.of(3), Terminator.BREAK, Int.of(4), Int.of(5)));
+        assertEquals(Int.of(3), c.pop());
         assertEquals(Int.of(2), c.pop());
         assertEquals(Int.of(1), c.pop());
         assertEquals(0, c.sp);
