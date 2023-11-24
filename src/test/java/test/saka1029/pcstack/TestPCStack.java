@@ -30,6 +30,18 @@ public class TestPCStack {
         assertEquals(c.eval("3"), c.eval("three"));
         c.run("'+ 'plus define");
         assertEquals(c.eval("3"), c.eval("1 2 plus"));
+        c.run("'(+) 'plus2 define");
+        assertEquals(c.eval("3"), c.eval("1 2 plus2"));
     }
 
+    @Test
+    public void testFact() {
+        Context c = Context.of(30);
+        c.run("'(@0 0 <= '(drop 1) '(@0 1 - fact *) if) 'fact define");
+        assertEquals(c.eval("1"), c.eval("0 fact"));
+        assertEquals(c.eval("1"), c.eval("1 fact"));
+        assertEquals(c.eval("2"), c.eval("2 fact"));
+        assertEquals(c.eval("6"), c.eval("3 fact"));
+        assertEquals(c.eval("24"), c.eval("4 fact"));
+    }
 }
