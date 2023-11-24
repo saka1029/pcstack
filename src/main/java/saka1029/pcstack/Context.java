@@ -85,6 +85,54 @@ public class Context {
         return pop();
     }
     
+    public Terminator execute() {
+        L0: while (!rstack.isEmpty()) {
+            Iterator<Verb> it = rstack.getLast();
+            L1: while (it.hasNext()) {
+                Verb v = it.next();
+                if (v instanceof List list) {
+                    rstack.addLast(list.iterator());
+                    continue L0;
+                } else
+                    execute(v);
+                if (sp > 0 && peek(0) instanceof Terminator t) {
+                    pop(); // drop Terminator
+                    switch (t) {
+                        case END:
+                            throw new RuntimeException("Do not push Terminator END on the stack");
+                        case BREAK2:
+                            rstack.removeLast();
+                            /* thru */
+                        case BREAK:
+                            break L1;
+                        case YIELD:
+                            return Terminator.YIELD;
+                        default:
+                            throw new RuntimeException("Unknown Terminator");
+                    }
+                }
+            }
+            rstack.removeLast();
+        }
+        return Terminator.END;
+    }
+    
+    public void run(String source) {
+        Reader reader = Reader.of(source);
+        Verb v;
+        while ((v = reader.read()) != null)
+            execute(v);
+    }
+    
+    public Verb eval(String source) {
+        int baseSize = sp;
+        run(source);
+        int resultSize = sp - baseSize;
+        assert resultSize == 1 : "%s result(s)".formatted(resultSize);
+        Verb result = pop();
+        return result;
+    }
+    
     @Override
     public String toString() {
         return IntStream.range(0, sp)
@@ -132,6 +180,8 @@ public class Context {
         add("<=", c -> c.push(b(o(c.pop()).compareTo(o(c.pop())) >= 0)));
         add(">", c -> c.push(b(o(c.pop()).compareTo(o(c.pop())) < 0)));
         add(">=", c -> c.push(b(o(c.pop()).compareTo(o(c.pop())) <= 0)));
+        add("true", Bool.TRUE);
+        add("false", Bool.FALSE);
         add("&", c -> c.push(b(b(c.pop()) & b(c.pop()))));
         add("|", c -> c.push(b(b(c.pop()) | b(c.pop()))));
         add("!", c -> c.push(b(!b(c.pop()))));
@@ -150,34 +200,9 @@ public class Context {
                 c.execute(closure);
             }
         });
-    }
-    
-    public Terminator execute() {
-        L0: while (!rstack.isEmpty()) {
-            Iterator<Verb> it = rstack.getLast();
-            L1: while (it.hasNext()) {
-                Verb v = it.next();
-                if (v instanceof List list) {
-                    rstack.addLast(list.iterator());
-                    continue L0;
-                } else
-                    execute(v);
-                if (sp > 0 && peek(0) instanceof Terminator t) {
-                    pop(); // drop Terminator
-                    switch (t) {
-                        case END:
-                            throw new RuntimeException("Do not push Terminator END on the stack");
-                        case BREAK:
-                            break L1;
-                        case YIELD:
-                            return Terminator.YIELD;
-                        default:
-                            throw new RuntimeException("Unknown Terminator");
-                    }
-                }
-            }
-            rstack.removeLast();
-        }
-        return Terminator.END;
+        add("define", c -> c.globals.put((Symbol)c.pop(), c.pop()));
+        add("break", Terminator.BREAK);
+        add("break2", Terminator.BREAK2);
+        add("yield", Terminator.YIELD);
     }
 }
