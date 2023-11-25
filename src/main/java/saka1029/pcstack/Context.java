@@ -151,6 +151,7 @@ public class Context {
             }
         });
 <<<<<<< HEAD
+<<<<<<< HEAD
     }
     
     public Terminator execute() {
@@ -176,10 +177,15 @@ public class Context {
         }
         return Terminator.END;
 =======
+=======
+>>>>>>> parent of 2a8d51e (Update Context.java)
         add("define", c -> c.globals.put((Symbol)c.pop(), c.pop()));
         add("break", Terminator.BREAK);
         add("break2", Terminator.BREAK2);
         add("yield", Terminator.YIELD);
+<<<<<<< HEAD
+>>>>>>> parent of 2a8d51e (Update Context.java)
+=======
 >>>>>>> parent of 2a8d51e (Update Context.java)
     }
 }
