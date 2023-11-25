@@ -200,32 +200,9 @@ public class Context {
                 c.execute(closure);
             }
         });
-<<<<<<< HEAD
         add("define", c -> c.globals.put((Symbol)c.pop(), c.pop()));
         add("break", Terminator.BREAK);
         add("break2", Terminator.BREAK2);
         add("yield", Terminator.YIELD);
-=======
-    }
-    
-    public Terminator execute() {
-        while (!rstack.isEmpty()) {
-            Iterator<Verb> it = rstack.getLast();
-            while (it.hasNext()) {
-                execute(it.next());
-                if (sp > 0 && peek(0) instanceof Terminator t) {
-                    switch (t) {
-                        case END:
-                        case BREAK:
-                        case YIELD:
-                        default:
-                            throw new RuntimeException("unknown Terminator");
-                    }
-                }
-            }
-            rstack.removeLast();
-        }
-        return Terminator.END;
->>>>>>> parent of 443b962 (Update Context.java)
     }
 }
