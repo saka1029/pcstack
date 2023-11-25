@@ -82,6 +82,20 @@ public class Context {
         return pop();
     }
     
+    public void run(String s) {
+        Reader reader = Reader.of(s);
+        Verb e;
+        while ((e = reader.read()) != null)
+            execute(e);
+    }
+    
+    public Verb eval(String s) {
+        int p = sp();
+        run(s);
+        assert sp() == p + 1 : "sp current=%d previous=%d".formatted(sp(), p);
+        return pop();
+    }
+    
     @Override
     public String toString() {
         return stack.toString();
@@ -121,6 +135,8 @@ public class Context {
         add("*", c -> c.push(i(i(c.pop()) * i(c.pop()))));
         add("/", c -> { int r = i(c.pop()); c.push(i(i(c.pop()) / r)); });
         add("%", c -> { int r = i(c.pop()); c.push(i(i(c.pop()) % r)); });
+        add("true", Bool.TRUE);
+        add("false", Bool.FALSE);
         add("==", c -> c.push(b(c.pop().equals(c.pop()))));
         add("!=", c -> c.push(b(!c.pop().equals(c.pop()))));
         add("<", c -> c.push(b(o(c.pop()).compareTo(o(c.pop())) > 0)));
