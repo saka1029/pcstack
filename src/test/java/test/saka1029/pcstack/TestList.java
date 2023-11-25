@@ -41,4 +41,28 @@ public class TestList {
         assertEquals(0, c.sp);
     }
 
+    @Test
+    public void testBreakNest() {
+        Context c = Context.of(10);
+        c.execute(List.of(Int.of(1), Int.of(2), List.of(Int.of(30), Terminator.BREAK, Int.of(40)), Int.of(5)));
+        assertEquals(Int.of(5), c.pop());
+//        assertEquals(Int.of(40), c.pop());
+        assertEquals(Int.of(30), c.pop());
+        assertEquals(Int.of(2), c.pop());
+        assertEquals(Int.of(1), c.pop());
+        assertEquals(0, c.sp);
+    }
+
+    @Test
+    public void testBreak2() {
+        Context c = Context.of(10);
+        c.execute(List.of(Int.of(1), Int.of(2), List.of(Int.of(30), Terminator.BREAK2, Int.of(40)), Int.of(5)));
+//        assertEquals(Int.of(5), c.pop());
+//        assertEquals(Int.of(40), c.pop());
+        assertEquals(Int.of(30), c.pop());
+        assertEquals(Int.of(2), c.pop());
+        assertEquals(Int.of(1), c.pop());
+        assertEquals(0, c.sp);
+    }
+
 }
