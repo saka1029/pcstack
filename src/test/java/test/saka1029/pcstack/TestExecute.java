@@ -1,5 +1,7 @@
 package test.saka1029.pcstack;
 
+import static org.junit.Assert.fail;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
