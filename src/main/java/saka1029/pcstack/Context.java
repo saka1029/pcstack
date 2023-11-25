@@ -146,7 +146,6 @@ public class Context {
                 c.execute(closure);
             }
         });
-    
         add("define", c -> c.globals.put((Symbol)c.pop(), c.pop()));
         add("break", Terminator.BREAK);
         add("yield", Terminator.YIELD);
