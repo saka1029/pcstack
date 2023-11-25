@@ -71,11 +71,7 @@ public class Context {
     }
     
     public void execute(Verb v) {
-        if (v instanceof List list) {
-            rstack.addLast(list.iterator());
-            execute();
-        } else
-            v.execute(this);
+        v.execute(this);
     }
     
     public Verb eval(Verb v) {
@@ -150,42 +146,9 @@ public class Context {
                 c.execute(closure);
             }
         });
-<<<<<<< HEAD
-<<<<<<< HEAD
-    }
     
-    public Terminator execute() {
-        while (!rstack.isEmpty()) {
-            Iterator<Verb> it = rstack.getLast();
-            L: while (it.hasNext()) {
-                execute(it.next());
-                if (sp > 0 && peek(0) instanceof Terminator t) {
-                    pop(); // drop Terminator
-                    switch (t) {
-                        case END:
-                            throw new RuntimeException("Terminator END is not allowed");
-                        case BREAK:
-                            break L;
-                        case YIELD:
-                            return Terminator.YIELD;
-                        default:
-                            throw new RuntimeException("Unknown Terminator");
-                    }
-                }
-            }
-            rstack.removeLast();
-        }
-        return Terminator.END;
-=======
-=======
->>>>>>> parent of 2a8d51e (Update Context.java)
         add("define", c -> c.globals.put((Symbol)c.pop(), c.pop()));
         add("break", Terminator.BREAK);
-        add("break2", Terminator.BREAK2);
         add("yield", Terminator.YIELD);
-<<<<<<< HEAD
->>>>>>> parent of 2a8d51e (Update Context.java)
-=======
->>>>>>> parent of 2a8d51e (Update Context.java)
     }
 }
