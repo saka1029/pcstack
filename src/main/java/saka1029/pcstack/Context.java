@@ -150,6 +150,7 @@ public class Context {
                 c.execute(closure);
             }
         });
+<<<<<<< HEAD
     }
     
     public Terminator execute() {
@@ -174,5 +175,11 @@ public class Context {
             rstack.removeLast();
         }
         return Terminator.END;
+=======
+        add("define", c -> c.globals.put((Symbol)c.pop(), c.pop()));
+        add("break", Terminator.BREAK);
+        add("break2", Terminator.BREAK2);
+        add("yield", Terminator.YIELD);
+>>>>>>> parent of 2a8d51e (Update Context.java)
     }
 }
