@@ -71,7 +71,11 @@ public class Context {
     }
     
     public void execute(Verb v) {
-        v.execute(this);
+        if (v instanceof List list) {
+            rstack.addLast(list.iterator());
+            execute();
+        } else
+            v.execute(this);
     }
     
     public Verb eval(Verb v) {
@@ -149,22 +153,17 @@ public class Context {
     }
     
     public Terminator execute() {
-        L0: while (!rstack.isEmpty()) {
+        while (!rstack.isEmpty()) {
             Iterator<Verb> it = rstack.getLast();
-            L1: while (it.hasNext()) {
-                Verb v = it.next();
-                if (v instanceof List list) {
-                    rstack.addLast(list.iterator());
-                    continue L0;
-                } else
-                    execute(v);
+            L: while (it.hasNext()) {
+                execute(it.next());
                 if (sp > 0 && peek(0) instanceof Terminator t) {
                     pop(); // drop Terminator
                     switch (t) {
                         case END:
                             throw new RuntimeException("Terminator END is not allowed");
                         case BREAK:
-                            break L1;
+                            break L;
                         case YIELD:
                             return Terminator.YIELD;
                         default:
