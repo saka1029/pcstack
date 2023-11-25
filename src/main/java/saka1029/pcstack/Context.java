@@ -1,53 +1,54 @@
 package saka1029.pcstack;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class Context {
 
-    final Verb[] stack;
-    public int sp = 0;
+    final java.util.List<Verb> stack;
 
-    final Deque<Iterator<Verb>> rstack;
+    final Deque<List> rstack;
     final Map<Symbol, Verb> globals;
     final Consumer<String> output;
 
-    Context(Verb[] stack, Deque<Iterator<Verb>> rstack, Map<Symbol, Verb> globals, Consumer<String> output) {
+    Context(java.util.List<Verb> stack, Deque<List> rstack, Map<Symbol, Verb> globals, Consumer<String> output) {
         this.stack = stack;
         this.rstack = rstack;
         this.globals = globals;
         this.output = output;
     }
 
-    Context(int stackSize) {
-        this(new Verb[stackSize], new ArrayDeque<>(), new HashMap<>(), System.out::println);
+    Context() {
+        this(new ArrayList<>(), new ArrayDeque<>(), new HashMap<>(), System.out::println);
         init();
     }
     
-    public static Context of(int stackSize) {
-        return new Context(stackSize);
+    public static Context of() {
+        return new Context();
     }
     
     public Context child() {
-        return new Context(new Verb[stack.length], new ArrayDeque<>(), globals, output);
+        return new Context(new ArrayList<>(), new ArrayDeque<>(), globals, output);
+    }
+    
+    public int sp() {
+        return stack.size();
     }
 
     public Verb pop() {
-        return stack[--sp];
+        return stack.removeLast();
     }
 
     public void push(Verb v) {
-        stack[sp++] = v;
+        stack.add(v);
     }
     
     public Verb peek(int index) {
-        return stack[sp - index -1];
+        return stack.get(sp() - index -1);
     }
 
     public void dup(int index) {
@@ -55,14 +56,14 @@ public class Context {
     }
     
     public void drop() {
-        --sp;
+        stack.removeLast();
     }
     
     public void swap() {
-        int top = sp - 1, second = sp - 2;
-        Verb temp = stack[top];
-        stack[top] = stack[second];
-        stack[second] = temp;
+        int top = sp() - 1, second = top - 1;
+        Verb temp = stack.get(top);
+        stack.set(top, stack.get(second));
+        stack.set(second, temp);
     }
     
     public void output(Verb v) {
@@ -75,17 +76,15 @@ public class Context {
     }
     
     public Verb eval(Verb v) {
-        int p = sp;
+        int p = sp();
         execute(v);
-        assert sp == p + 1;
+        assert sp() == p + 1 : "sp current=%d previous=%d".formatted(sp(), p);
         return pop();
     }
     
     @Override
     public String toString() {
-        return IntStream.range(0, sp)
-            .mapToObj(i -> "" + stack[i])
-            .collect(Collectors.joining(" ", "[", "]"));
+        return stack.toString();
     }
     
     void add(String name, Verb v) {

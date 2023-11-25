@@ -31,7 +31,7 @@ public class TestContext {
 
     @Test
     public void testArithmetics() {
-        Context c = Context.of(10);
+        Context c = Context.of();
         assertEquals(i(3), c.eval(list(i(1), i(2), sym("+"))));
         assertEquals(i(-1), c.eval(list(i(1), i(2), sym("-"))));
         assertEquals(i(6), c.eval(list(i(2), i(3), sym("*"))));
@@ -41,8 +41,7 @@ public class TestContext {
 
     @Test
     public void testFor() {
-        Context c = Context.of(10);
-        // (0 '(1 2 3) '+ for)
+        Context c = Context.of();
         assertEquals(i(6), c.eval(list(i(0), q(list(i(1), i(2), i(3))), q(sym("+")), sym("for"))));
     }
 }
