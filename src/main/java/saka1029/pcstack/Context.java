@@ -207,5 +207,6 @@ public class Context {
             c.push(Range.of(start, end, step));
         });
         add("iota", c -> c.push(Range.of(i(c.pop()))));
+        add("generator", c -> c.push(Generator.of(c, c.pop())));
     }
 }
