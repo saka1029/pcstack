@@ -206,5 +206,6 @@ public class Context {
             int step = i(c.pop()), end = i(c.pop()), start = i(c.pop());
             c.push(Range.of(start, end, step));
         });
+        add("iota", c -> c.push(Range.of(i(c.pop()))));
     }
 }

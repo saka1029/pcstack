@@ -31,4 +31,17 @@ public class TestRange {
         assertEquals(Int.of(120), c.eval("5 fact"));
     }
 
+    @Test
+    public void testIota() {
+        Context c = Context.of();
+        assertEquals(Int.of(6), c.eval("0 3 iota '+ for"));
+        assertEquals(Int.of(0), c.eval("0 0 iota '+ for"));
+        c.run("'(1 swap iota '* for) 'fact define");
+        assertEquals(Int.of(1), c.eval("0 fact"));
+        assertEquals(Int.of(1), c.eval("1 fact"));
+        assertEquals(Int.of(2), c.eval("2 fact"));
+        assertEquals(Int.of(6), c.eval("3 fact"));
+        assertEquals(Int.of(24), c.eval("4 fact"));
+        assertEquals(Int.of(120), c.eval("5 fact"));
+    }
 }
