@@ -1,8 +1,6 @@
 package saka1029.pcstack;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -11,11 +9,11 @@ public class Context {
 
     final java.util.List<Verb> stack;
 
-    final Deque<List> rstack;
+    final java.util.List<List> rstack;
     final Map<Symbol, Verb> globals;
     final Consumer<String> output;
 
-    Context(java.util.List<Verb> stack, Deque<List> rstack, Map<Symbol, Verb> globals, Consumer<String> output) {
+    Context(java.util.List<Verb> stack, java.util.List<List> rstack, Map<Symbol, Verb> globals, Consumer<String> output) {
         this.stack = stack;
         this.rstack = rstack;
         this.globals = globals;
@@ -23,7 +21,7 @@ public class Context {
     }
 
     Context() {
-        this(new ArrayList<>(), new ArrayDeque<>(), new HashMap<>(), System.out::println);
+        this(new ArrayList<>(), new ArrayList<>(), new HashMap<>(), System.out::println);
         init();
     }
     
@@ -32,7 +30,7 @@ public class Context {
     }
     
     public Context child() {
-        return new Context(new ArrayList<>(), new ArrayDeque<>(), globals, output);
+        return new Context(new ArrayList<>(), new ArrayList<>(), globals, output);
     }
     
     public int sp() {
@@ -75,6 +73,33 @@ public class Context {
         v.execute(this);
     }
     
+    public Terminator execute() {
+        L0: while (!rstack.isEmpty()) {
+            L1: for (List list = rstack.getLast(); list instanceof Cons cons;) {
+                rstack.set(rstack.size() - 1, list = cons.cdr);
+                Verb v = cons.car;
+                execute(v);
+                if (v instanceof List)
+                    continue L0;
+                if (!stack.isEmpty() && stack.getLast() instanceof Terminator terminator) {
+                    drop(); // drop Terminator;
+                    switch (terminator) {
+                        case END:
+                            throw new RuntimeException("Terminator END found on stack");
+                        case BREAK:
+                            break L1;
+                        case YIELD:
+                            return Terminator.YIELD;
+                        default:
+                            throw new RuntimeException("Unknown terminator '%s'".formatted(terminator));
+                    }
+                }
+            }
+            rstack.removeLast();
+        }
+        return Terminator.END;
+    }
+
     public Verb eval(Verb v) {
         int p = sp();
         execute(v);
@@ -85,8 +110,10 @@ public class Context {
     public void run(String s) {
         Reader reader = Reader.of(s);
         Verb e;
-        while ((e = reader.read()) != null)
+        while ((e = reader.read()) != null) {
             execute(e);
+            execute();
+        }
     }
     
     public Verb eval(String s) {

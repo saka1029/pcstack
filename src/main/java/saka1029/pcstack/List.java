@@ -27,8 +27,9 @@ public interface List extends Verb, Collection {
 
     @Override
     default void execute(Context c) {
-        for (Verb e : this)
-            c.execute(e);
+        c.rstack.addLast(this);
+//        for (Verb e : this)
+//            c.execute(e);
     }
     
 }

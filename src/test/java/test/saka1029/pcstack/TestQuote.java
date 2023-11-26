@@ -14,16 +14,14 @@ public class TestQuote {
     @Test
     public void testExecuteInt() {
         Context c = Context.of();
-        c.execute(Quote.of(Int.of(3)));
-        assertEquals(Int.of(3), c.pop());
+        assertEquals(Int.of(3), c.eval("'3"));
         assertEquals(0, c.sp());
     }
 
     @Test
     public void testExecuteList() {
         Context c = Context.of();
-        c.execute(Quote.of(List.of(Int.of(1), Int.of(2))));
-        assertEquals(List.of(Int.of(1), Int.of(2)), c.pop());
+        assertEquals(List.of(Int.of(1), Int.of(2)), c.eval("'(1 2)"));
         assertEquals(0, c.sp());
     }
 

@@ -30,4 +30,16 @@ public class TestList {
         assertEquals(0, c.sp());
     }
 
+    @Test
+    public void testBreak() {
+        Context c = Context.of();
+        c.run("(1 2 (30 break 40) 5)");
+        assertEquals(Int.of(5), c.pop());
+//        assertEquals(Int.of(40), c.pop());
+        assertEquals(Int.of(30), c.pop());
+        assertEquals(Int.of(2), c.pop());
+        assertEquals(Int.of(1), c.pop());
+        assertEquals(0, c.sp());
+    }
+
 }
