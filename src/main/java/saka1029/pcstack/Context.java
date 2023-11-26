@@ -198,5 +198,13 @@ public class Context {
         add("define", c -> c.globals.put((Symbol)c.pop(), c.pop()));
         add("break", Terminator.BREAK);
         add("yield", Terminator.YIELD);
+        add("range", c -> {
+            int end = i(c.pop()), start = i(c.pop());
+            c.push(Range.of(start, end));
+        });
+        add("range-step", c -> {
+            int step = i(c.pop()), end = i(c.pop()), start = i(c.pop());
+            c.push(Range.of(start, end, step));
+        });
     }
 }
