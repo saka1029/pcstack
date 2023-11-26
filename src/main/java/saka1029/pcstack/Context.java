@@ -76,23 +76,23 @@ public class Context {
     
     public void execute(Verb v) {
         v.execute(this);
-        logger.info(v + " -> " + this);
+//        logger.info(v + " -> " + this);
     }
     
     public Terminator execute() {
         L0: while (!rstack.isEmpty()) {
             L1: for (List list = rstack.getLast(); list instanceof Cons cons;) {
-                int rstackSize = rstack.size();
-                rstack.set(rstack.size() - 1, list = cons.cdr);
+                int size = rstack.size();
+                rstack.set(size - 1, list = cons.cdr);
                 Verb v = cons.car;
                 execute(v);
-                if (rstack.size() != rstackSize)
+                if (rstack.size() != size)
                     continue L0;
                 if (!stack.isEmpty() && stack.getLast() instanceof Terminator terminator) {
                     drop(); // drop Terminator;
                     switch (terminator) {
                         case END:
-                            throw new RuntimeException("Terminator END found on stack");
+                            throw new RuntimeException("Terminator 'end' found on stack");
                         case BREAK:
                             break L1;
                         case YIELD:
