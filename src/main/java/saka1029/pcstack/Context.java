@@ -84,8 +84,7 @@ public class Context {
             L1: for (List list = rstack.getLast(); list instanceof Cons cons;) {
                 int size = rstack.size();
                 rstack.set(size - 1, list = cons.cdr);
-                Verb v = cons.car;
-                execute(v);
+                execute(cons.car);
                 if (rstack.size() != size)
                     continue L0;
                 if (!stack.isEmpty() && stack.getLast() instanceof Terminator terminator) {
@@ -107,12 +106,12 @@ public class Context {
         return Terminator.END;
     }
 
-    public Verb eval(Verb v) {
-        int p = sp();
-        execute(v);
-        assert sp() == p + 1 : "sp current=%d previous=%d".formatted(sp(), p);
-        return pop();
-    }
+//    public Verb eval(Verb v) {
+//        int p = sp();
+//        execute(v);
+//        assert sp() == p + 1 : "sp current=%d previous=%d".formatted(sp(), p);
+//        return pop();
+//    }
     
     public void run(String s) {
         Reader reader = Reader.of(s);
