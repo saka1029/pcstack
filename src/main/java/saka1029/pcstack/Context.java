@@ -4,8 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.logging.Logger;
+
+import saka1029.Common;
 
 public class Context {
+
+    static final Logger logger = Common.logger(Context.class);
 
     final java.util.List<Verb> stack;
 
@@ -71,15 +76,17 @@ public class Context {
     
     public void execute(Verb v) {
         v.execute(this);
+        logger.info(v + " -> " + this);
     }
     
     public Terminator execute() {
         L0: while (!rstack.isEmpty()) {
             L1: for (List list = rstack.getLast(); list instanceof Cons cons;) {
+                int rstackSize = rstack.size();
                 rstack.set(rstack.size() - 1, list = cons.cdr);
                 Verb v = cons.car;
                 execute(v);
-                if (v instanceof List)
+                if (rstack.size() != rstackSize)
                     continue L0;
                 if (!stack.isEmpty() && stack.getLast() instanceof Terminator terminator) {
                     drop(); // drop Terminator;
@@ -176,7 +183,8 @@ public class Context {
         add("print", c -> c.output(c.pop()));
         add("if", c -> {
             Verb otherwise = c.pop(), then = c.pop();
-            if (b(c.pop()))
+            boolean cond = b(c.pop());
+            if (cond)
                 c.execute(then);
             else
                 c.execute(otherwise);
