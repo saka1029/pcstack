@@ -88,8 +88,9 @@ public class Context {
             L1: for (List list = rstack.getLast(); list instanceof Cons cons;) {
                 int size = rstack.size();
                 rstack.set(size - 1, list = cons.cdr);
+                logger.info("execute: %s %s".formatted(cons.car, this));
                 execute(cons.car);
-                if (rstack.size() != size)
+                if (rstack.isEmpty() || rstack.getLast() != list)
                     continue L0;
                 if (!stack.isEmpty() && stack.getLast() instanceof Terminator terminator) {
                     drop(); // drop Terminator;
@@ -135,7 +136,7 @@ public class Context {
     
     @Override
     public String toString() {
-        return stack.toString();
+        return "stack=%s ratack=%s".formatted(stack, rstack);
     }
     
     void add(String name, Verb v) {
@@ -163,8 +164,8 @@ public class Context {
     }
 
     void init() {
-        add("@0", c -> dup(0));
-        add("@1", c -> dup(1));
+        add("@0", c -> c.dup(0));
+        add("@1", c -> c.dup(1));
         add("drop", Context::drop);
         add("swap", Context::swap);
         add("+", c -> c.push(i(i(c.pop()) + i(c.pop()))));
