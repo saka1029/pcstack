@@ -69,7 +69,7 @@ public class Context {
         stack.set(second, temp);
     }
     
-    public void output(Verb v) {
+    public void output(Object v) {
         if (output != null)
             output.accept(v.toString());
     }
@@ -180,6 +180,17 @@ public class Context {
         add("|", c -> c.push(b(b(c.pop()) | b(c.pop()))));
         add("!", c -> c.push(b(!b(c.pop()))));
         add("print", c -> c.output(c.pop()));
+        add("stack", c -> c.output(this));
+        add("cons", c -> {
+            List cdr = (List)c.pop();
+            Verb car = c.pop();
+            c.push(Cons.of(car, cdr));
+        });
+        add("uncons", c -> {
+            Cons cons = (Cons)c.pop();
+            c.push(cons.car);
+            c.push(cons.cdr);
+        });
         add("if", c -> {
             Verb otherwise = c.pop(), then = c.pop();
             boolean cond = b(c.pop());
@@ -194,6 +205,7 @@ public class Context {
                 c.push(e);
                 c.execute(closure);
             }
+            output(c);
         });
         add("define", c -> c.globals.put((Symbol)c.pop(), c.pop()));
         add("break", Terminator.BREAK);
@@ -207,6 +219,6 @@ public class Context {
             c.push(Range.of(start, end, step));
         });
         add("iota", c -> c.push(Range.of(i(c.pop()))));
-        add("generator", c -> c.push(Generator.of(c, c.pop())));
+        add("generator", c -> c.push(Generator.of(c, (List)c.pop())));
     }
 }

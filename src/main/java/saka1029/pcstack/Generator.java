@@ -13,8 +13,8 @@ public class Generator implements Value, Collection {
         this.code = code;
     }
     
-    public static Generator of(Context origin, Verb verb) {
-        return new Generator(origin.child(), verb instanceof List list ? list : List.of(verb));
+    public static Generator of(Context origin, List list) {
+        return new Generator(origin.child(), list);
     }
     
     class Iter implements Iterator<Verb> {
