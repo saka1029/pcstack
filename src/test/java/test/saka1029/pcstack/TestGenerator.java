@@ -23,4 +23,11 @@ public class TestGenerator {
         c.run("'('(iota '(yield) for) cons generator) 'gen define");
         assertEquals(Int.of(6), c.eval("0 3 gen '+ for"));
     }
+    
+    @Test
+    public void testFactGenerator() {
+        Context c = Context.of();
+//        c.run("1 '(1 2 3 4 5 6) '(* @0 print) for");
+        c.run("'(1 '(1 2 3 4 5 6) '(* @0 yield) for) generator 'print for");
+    }
 }

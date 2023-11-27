@@ -208,8 +208,8 @@ public class Context {
             for (Verb e : (Collection)c.pop()) {
                 c.push(e);
                 c.executeAsList(closure);
+//                c.execute();
             }
-            output(c);
         });
         add("define", c -> c.globals.put((Symbol)c.pop(), c.pop()));
         add("break", Terminator.BREAK);
