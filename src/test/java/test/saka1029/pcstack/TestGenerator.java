@@ -39,6 +39,7 @@ public class TestGenerator {
      * forを実行した後のstackは
      * [1, yield, 2, yield, 3, yield]
      * となっている。
+     * c.execute(closure)をc.executeAsList(closure)に変更するとうまくいく。
      */
     @Test
     public void testFor() {

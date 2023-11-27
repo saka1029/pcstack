@@ -10,6 +10,15 @@ import saka1029.pcstack.Int;
 public class TestPCStack {
 
     @Test
+    public void testIf() {
+        Context c = Context.of();
+        assertEquals(Int.of(1), c.eval("true 1 2 if"));
+        assertEquals(Int.of(2), c.eval("false 1 2 if"));
+        assertEquals(Int.of(3), c.eval("1 2 true '+ '- if"));
+        assertEquals(Int.of(-1), c.eval("1 2 false '+ '- if"));
+    }
+
+    @Test
     public void testFact() {
         Context c = Context.of();
         c.run("'(@0 0 <= '(drop 1) '(@0 1 - fact *) if) 'fact define");

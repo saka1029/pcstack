@@ -11,6 +11,10 @@ public interface List extends Verb, Collection {
             list = Cons.of(elements[i], list);
         return list;
     }
+    
+    public static List force(Verb v) {
+        return v instanceof List list ? list : List.of(v);
+    }
 
     public static final List NIL = new List() {
 

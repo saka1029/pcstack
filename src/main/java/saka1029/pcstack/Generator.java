@@ -6,14 +6,14 @@ import java.util.NoSuchElementException;
 public class Generator implements Value, Collection {
 
     final Context context;
-    final List code;
+    final Verb code;
     
-    Generator(Context context, List code) {
+    Generator(Context context, Verb code) {
         this.context = context;
         this.code = code;
     }
     
-    public static Generator of(Context origin, List list) {
+    public static Generator of(Context origin, Verb list) {
         return new Generator(origin.child(), list);
     }
     
@@ -22,7 +22,7 @@ public class Generator implements Value, Collection {
         Verb current;
         
         Iter() {
-            context.execute(code);
+            context.executeAsList(code);
             this.current = advance();
         }
         

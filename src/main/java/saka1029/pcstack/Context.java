@@ -79,6 +79,10 @@ public class Context {
 //        logger.info(v + " -> " + this);
     }
     
+    public void executeAsList(Verb v) {
+        execute(v instanceof List list ? list : List.of(v));
+    }
+
     public Terminator execute() {
         L0: while (!rstack.isEmpty()) {
             L1: for (List list = rstack.getLast(); list instanceof Cons cons;) {
@@ -195,15 +199,15 @@ public class Context {
             Verb otherwise = c.pop(), then = c.pop();
             boolean cond = b(c.pop());
             if (cond)
-                c.execute(then);
+                c.executeAsList(then);
             else
-                c.execute(otherwise);
+                c.executeAsList(otherwise);
         });
         add("for", c -> {
             Verb closure = c.pop();
             for (Verb e : (Collection)c.pop()) {
                 c.push(e);
-                c.execute(closure);
+                c.executeAsList(closure);
             }
             output(c);
         });
