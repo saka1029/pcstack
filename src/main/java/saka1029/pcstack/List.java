@@ -1,8 +1,5 @@
 package saka1029.pcstack;
 
-import java.util.Collections;
-import java.util.Iterator;
-
 public interface List extends Verb, Collection {
 
     public static List of(Verb... elements) {
@@ -19,8 +16,8 @@ public interface List extends Verb, Collection {
     public static final List NIL = new List() {
 
         @Override
-        public Iterator<Verb> iterator() {
-            return Collections.emptyIterator();
+        public Iterator iterator() {
+            return Iterator.EMPTY;
         }
         
         @Override
@@ -31,9 +28,7 @@ public interface List extends Verb, Collection {
 
     @Override
     default void execute(Context c) {
-        c.rstack.addLast(this);
-//        for (Verb e : this)
-//            c.execute(e);
+        c.rstack.addLast(this.iterator());
     }
     
 }

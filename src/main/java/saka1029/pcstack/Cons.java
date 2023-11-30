@@ -1,7 +1,5 @@
 package saka1029.pcstack;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class Cons implements List {
@@ -19,20 +17,15 @@ public class Cons implements List {
     }
 
     @Override
-    public Iterator<Verb> iterator() {
-        return new Iterator<>() {
+    public Iterator iterator() {
+        return new Iterator() {
 
             List list = Cons.this;
             
             @Override
-            public boolean hasNext() {
-                return list instanceof Cons;
-            }
-
-            @Override
             public Verb next() {
                 if (!(list instanceof Cons c))
-                    throw new NoSuchElementException();
+                    return null;
                 Verb result = c.car;
                 list = c.cdr;
                 return result;

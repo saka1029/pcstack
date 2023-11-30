@@ -14,11 +14,11 @@ public class Context {
 
     final java.util.List<Verb> stack;
 
-    final java.util.List<List> rstack;
+    final java.util.List<Iterator> rstack;
     final Map<Symbol, Verb> globals;
     final Consumer<String> output;
 
-    Context(java.util.List<Verb> stack, java.util.List<List> rstack, Map<Symbol, Verb> globals, Consumer<String> output) {
+    Context(java.util.List<Verb> stack, java.util.List<Iterator> rstack, Map<Symbol, Verb> globals, Consumer<String> output) {
         this.stack = stack;
         this.rstack = rstack;
         this.globals = globals;
@@ -69,6 +69,18 @@ public class Context {
         stack.set(second, temp);
     }
     
+    public Iterator forEach(Verb closure, List list) {
+        return new Iterator() {
+            
+            @Override
+            public Verb next() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+            
+        };
+    }
+
     public void output(Object v) {
         if (output != null)
             output.accept(v.toString());
@@ -85,13 +97,11 @@ public class Context {
 
     public Terminator execute() {
         L0: while (!rstack.isEmpty()) {
-            L1: for (List list = rstack.getLast(); list instanceof Cons cons;) {
-                int size = rstack.size();
-                rstack.set(size - 1, list = cons.cdr);
-                logger.info("execute: %s %s".formatted(cons.car, this));
-                execute(cons.car);
-                if (rstack.isEmpty() || rstack.getLast() != list)
-                    continue L0;
+            Iterator iterator = rstack.getLast();
+            Verb verb;
+            L1: while ((verb = iterator.next()) != null) {
+                logger.info("execute: %s %s".formatted(verb, this));
+                execute(verb);
                 if (!stack.isEmpty() && stack.getLast() instanceof Terminator terminator) {
                     drop(); // drop Terminator;
                     switch (terminator) {
@@ -105,8 +115,9 @@ public class Context {
                             throw new RuntimeException("Unknown terminator '%s'".formatted(terminator));
                     }
                 }
+                if (rstack.isEmpty() || rstack.getLast() != iterator)
+                    continue L0;
             }
-            rstack.removeLast();
         }
         return Terminator.END;
     }
@@ -206,7 +217,9 @@ public class Context {
         });
         add("for", c -> {
             Verb closure = c.pop();
-            for (Verb e : (Collection)c.pop()) {
+            Iterator it = ((List)c.pop()).iterator();
+            Verb e;
+            while ((e = it.next()) != null) {
                 c.push(e);
                 c.executeAsList(closure);
 //                c.execute();

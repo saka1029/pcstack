@@ -1,7 +1,5 @@
 package saka1029.pcstack;
 
-import java.util.Iterator;
-
 public class Range implements Value, Collection {
     
     final int start, end, step;
@@ -25,18 +23,15 @@ public class Range implements Value, Collection {
     }
 
     @Override
-    public Iterator<Verb> iterator() {
-        return new Iterator<>() {
+    public Iterator iterator() {
+        return new Iterator() {
 
             int current = start;
             
             @Override
-            public boolean hasNext() {
-                return step >= 0 ? current <= end : current >= end;
-            }
-
-            @Override
             public Verb next() {
+                if (step >= 0 ? current > end : current < end)
+                    return null;
                 int result = current;
                 current += step;
                 return Int.of(result);
