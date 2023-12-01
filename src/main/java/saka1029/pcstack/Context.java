@@ -69,15 +69,32 @@ public class Context {
         stack.set(second, temp);
     }
     
+    public int rsp() {
+        return rstack.size();
+    }
+
+    public void rpush(Iterator iterator) {
+        rstack.addLast(iterator);
+    }
+    
+    public Iterator rpop() {
+        return rstack.removeLast();
+    }
+    
+    public Iterator rpeek() {
+        return rstack.getLast();
+    }
+    
     public Iterator forEach(Verb closure, List list) {
         return new Iterator() {
+            final Iterator iterator = list.iterator();
+            final List listClosure = List.asList(closure);
             
             @Override
             public Verb next() {
-                // TODO Auto-generated method stub
-                return null;
+                Verb element = iterator.next();
+                return element == null ? null : Cons.of(element, listClosure);
             }
-            
         };
     }
 
@@ -91,13 +108,9 @@ public class Context {
 //        logger.info(v + " -> " + this);
     }
     
-    public void executeAsList(Verb v) {
-        execute(v instanceof List list ? list : List.of(v));
-    }
-
     public Terminator execute() {
-        L0: while (!rstack.isEmpty()) {
-            Iterator iterator = rstack.getLast();
+        L0: while (rsp() > 0) {
+            Iterator iterator = rpeek();
             Verb verb;
             L1: while ((verb = iterator.next()) != null) {
                 logger.info("execute: %s %s".formatted(verb, this));
@@ -115,9 +128,10 @@ public class Context {
                             throw new RuntimeException("Unknown terminator '%s'".formatted(terminator));
                     }
                 }
-                if (rstack.isEmpty() || rstack.getLast() != iterator)
+                if (rsp() == 0 || rpeek() != iterator)
                     continue L0;
             }
+            rpop();
         }
         return Terminator.END;
     }
@@ -208,22 +222,15 @@ public class Context {
             c.push(cons.cdr);
         });
         add("if", c -> {
-            Verb otherwise = c.pop(), then = c.pop();
+            List otherwise = List.asList(c.pop()), then = List.asList(c.pop());
             boolean cond = b(c.pop());
             if (cond)
-                c.executeAsList(then);
+                c.execute(then);
             else
-                c.executeAsList(otherwise);
+                c.execute(otherwise);
         });
         add("for", c -> {
-            Verb closure = c.pop();
-            Iterator it = ((List)c.pop()).iterator();
-            Verb e;
-            while ((e = it.next()) != null) {
-                c.push(e);
-                c.executeAsList(closure);
-//                c.execute();
-            }
+            rpush(forEach(c.pop(), (List)c.pop()));
         });
         add("define", c -> c.globals.put((Symbol)c.pop(), c.pop()));
         add("break", Terminator.BREAK);

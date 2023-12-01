@@ -9,10 +9,15 @@ public interface List extends Verb, Collection {
         return list;
     }
     
-    public static List force(Verb v) {
-        return v instanceof List list ? list : List.of(v);
+    public static List asList(Verb verb) {
+        return verb instanceof List list ? list : Cons.of(verb, List.NIL);
     }
 
+    @Override
+    default void execute(Context c) {
+        c.rpush(iterator());
+    }
+    
     public static final List NIL = new List() {
 
         @Override
@@ -25,10 +30,4 @@ public interface List extends Verb, Collection {
             return "()";
         }
     };
-
-    @Override
-    default void execute(Context c) {
-        c.rstack.addLast(this.iterator());
-    }
-    
 }

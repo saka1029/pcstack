@@ -3,11 +3,11 @@ package saka1029.pcstack;
 public class Generator implements Value, Collection {
 
     final Context context;
-    final Verb code;
+    final List code;
     
     Generator(Context context, Verb code) {
         this.context = context;
-        this.code = code;
+        this.code = List.asList(code);
     }
     
     public static Generator of(Context origin, Verb list) {
@@ -19,7 +19,7 @@ public class Generator implements Value, Collection {
         Verb current;
         
         Iter() {
-            context.executeAsList(code);
+            context.execute(code);
             this.current = advance();
         }
         
