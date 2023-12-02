@@ -1,6 +1,6 @@
 package saka1029.pcstack;
 
-public class Generator implements Value, Collection {
+public class Generator implements List {
 
     final Context context;
     final List code;

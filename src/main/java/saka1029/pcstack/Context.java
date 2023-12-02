@@ -113,7 +113,7 @@ public class Context {
             Iterator iterator = rpeek();
             Verb verb;
             L1: while ((verb = iterator.next()) != null) {
-                logger.info("execute: %s %s".formatted(verb, this));
+//                logger.info("execute: %s %s".formatted(verb, this));
                 execute(verb);
                 if (!stack.isEmpty() && stack.getLast() instanceof Terminator terminator) {
                     drop(); // drop Terminator;
@@ -154,14 +154,15 @@ public class Context {
     
     public Verb eval(String s) {
         int p = sp();
+        String pstack = toString();
         run(s);
-        assert sp() == p + 1 : "sp current=%d previous=%d".formatted(sp(), p);
+        assert sp() == p + 1 : "stack current=%s previous=%s".formatted(toString(), pstack);
         return pop();
     }
     
     @Override
     public String toString() {
-        return "stack=%s ratack=%s".formatted(stack, rstack);
+        return stack.toString();
     }
     
     void add(String name, Verb v) {

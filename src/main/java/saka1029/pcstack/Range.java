@@ -1,6 +1,6 @@
 package saka1029.pcstack;
 
-public class Range implements Value, Collection {
+public class Range implements List {
     
     final int start, end, step;
     
