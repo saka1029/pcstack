@@ -13,6 +13,11 @@ public class TestGenerator {
     public void testSimple() {
         Context c = Context.of();
         assertEquals(Int.of(6), c.eval("0 '(1 yield 2 yield 3 yield) generator '+ for"));
+    }
+    
+    @Test
+    public void testFor() {
+        Context c = Context.of();
         assertEquals(Int.of(6), c.eval("0 '(3 iota '(yield) for) generator '+ for"));
         assertEquals(Int.of(6), c.eval("0 '(3 iota 'yield for) generator '+ for"));
     }
